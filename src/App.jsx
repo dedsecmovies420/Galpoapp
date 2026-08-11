@@ -74,7 +74,6 @@ async function writeLegacyStorage(key, value) {
 export default function App() {
   const [tab, setTab] = useState("overview");
   const [projects, setProjects] = useState(demoProjects);
-  const [paymentQR, setPaymentQR] = useState(null);
   const [modal, setModal] = useState(null);
   const [statusFilter, setStatusFilter] = useState("all");
   const [loading, setLoading] = useState(true);
@@ -98,8 +97,7 @@ export default function App() {
       if (raw) {
         try {
           const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed.projects)) setProjects(parsed.projects);
-          if (Object.prototype.hasOwnProperty.call(parsed, "paymentQR")) setPaymentQR(parsed.paymentQR || null);
+          if (Array.isArray(parsed.projects)) setProjects(parsed.projects)
         } catch (e) {
           showToast("Saved data could not be read", "error");
         }
@@ -115,12 +113,11 @@ export default function App() {
     if (saving) return;
     setSaving(true);
     const payload = JSON.stringify({
-      app: "Galpotori",
-      version: 2,
-      projects,
-      paymentQR,
-      savedAt: new Date().toISOString(),
-    });
+  app: "Galpotori",
+  version: 2,
+  projects,
+  savedAt: new Date().toISOString(),
+});
 
     let saved = writeLocalStorage(STORAGE_KEY, payload);
     if (saved) {
