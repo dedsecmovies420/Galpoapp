@@ -465,7 +465,6 @@ function MorePage({ projects, setProjects, showToast, markDirty }) {
     reader.onerror = () => showToast("Couldn't read that image", "error");
     reader.readAsDataURL(file);
   }
-
 async function exportBackup() {
   setBusy(true);
 
@@ -480,9 +479,8 @@ async function exportBackup() {
 
     const json = JSON.stringify(payload, null, 2);
 
-    const filename = `galpotori-backup-${new Date()
-      .toISOString()
-      .slice(0, 10)}.json`;
+    const filename =
+      `galpotori-backup-${new Date().toISOString().slice(0, 10)}.json`;
 
     // Android APK
     if (window.Capacitor?.isNativePlatform?.()) {
@@ -490,15 +488,14 @@ async function exportBackup() {
         path: filename,
         data: json,
         directory: Directory.Documents,
-        encoding: Encoding.UTF8,
-        recursive: true
+        encoding: Encoding.UTF8
       });
 
       showToast("Backup saved in Documents");
       return;
     }
 
-    // Browser fallback
+    // Browser
     const blob = new Blob([json], {
       type: "application/json"
     });
@@ -529,6 +526,7 @@ async function exportBackup() {
     setBusy(false);
   }
 }
+
 
   async function onBackupFileChange(e) {
     const file = e.target.files?.[0];
