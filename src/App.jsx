@@ -246,13 +246,11 @@ export default function App() {
         )}
         {!loading && tab === "more" && (
           <MorePage
-            paymentQR={paymentQR}
-            setPaymentQR={(value) => { setPaymentQR(value); markDirty(); }}
-            projects={projects}
-            setProjects={(value) => { setProjects(value); markDirty(); }}
-            showToast={showToast}
-            markDirty={markDirty}
-          />
+  projects={projects}
+  setProjects={(value) => { setProjects(value); markDirty(); }}
+  showToast={showToast}
+  markDirty={markDirty}
+/>
         )}
       </div>
 
