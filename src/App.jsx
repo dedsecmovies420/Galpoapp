@@ -448,9 +448,7 @@ function Projects({ projects, statusFilter, setStatusFilter, onEdit, onRemove })
 
 // ---------- More: Payment QR + Backup/Restore ----------
 function MorePage({ projects, setProjects, showToast, markDirty }) {
-  function onQrFileChange(e) {
-  ...
-}
+
   const backupInputRef = useRef(null);
   const [busy, setBusy] = useState(false);
 
@@ -599,7 +597,23 @@ function ProjectModal({ initial, onClose, onSubmit, onDelete }) {
   Number(price) >= 0;
 
 function submit() {
-  if (!canSubmit) {
+  if (!clientName.trim()) {
+    showToast("Please enter client name", "error");
+    return;
+  }
+
+  if (!projectName.trim()) {
+    showToast("Please enter project name", "error");
+    return;
+  }
+
+  if (!deliveryDate) {
+    showToast("Please select delivery date", "error");
+    return;
+  }
+
+  if (price === "" || Number(price) < 0) {
+    showToast("Please enter a valid price", "error");
     return;
   }
 
