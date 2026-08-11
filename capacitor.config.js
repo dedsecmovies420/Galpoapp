@@ -1,4 +1,3 @@
-/** @type {import('@capacitor/cli').CapacitorConfig} */
 const config = {
   appId: 'com.galpotori.app',
   appName: 'Galpotori',
@@ -6,4 +5,4 @@ const config = {
   bundledWebRuntime: false
 };
 
-module.exports = config;
+export default config;
