@@ -465,75 +465,69 @@ function MorePage({ projects, setProjects, showToast, markDirty }) {
     reader.readAsDataURL(file);
   }
 
-  async function exportBackup() {
-    setBusy(true);
-    try {
-      const payload = { app: "Galpotori", editor: "Sourav", exportedAt: new Date().toISOString(), projects, paymentQR };
-      const json = JSON.stringify(payload, null, 2);
-      const filename = `galpotori-backup-${new Date().toISOString().slice(0, 10)}.json`;
+async function exportBackup() {
+  setBusy(true);
 
-      if (window.showSaveFilePicker) {
-        try {
-          const handle = await window.showSaveFilePicker({
-            suggestedName: filename,
-            types: [{ description: "Galpotori Backup", accept: { "application/json": [".json"] } }],
-          });
-          const writable = await handle.createWritable();
-          await writable.write(json);
-          await writable.close();
-          showToast("Backup saved");
-          setBusy(false);
-          return;
-        } catch (e) {
-          if (e && e.name === "AbortError") { setBusy(false); return; }
-          // fall through to download fallback
-        }
-      }
-      const blob = new Blob([json], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url; a.download = filename;
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      showToast("Backup downloaded");
-    } catch (e) {
-      showToast("Backup failed", "error");
+  try {
+    const payload = {
+      app: "Galpotori",
+      editor: "Sourav",
+      exportedAt: new Date().toISOString(),
+      projects,
+      paymentQR
+    };
+
+    const json = JSON.stringify(payload, null, 2);
+
+    const filename = `galpotori-backup-${new Date()
+      .toISOString()
+      .slice(0, 10)}.json`;
+
+    // Android APK
+    if (window.Capacitor?.isNativePlatform?.()) {
+      await Filesystem.writeFile({
+        path: filename,
+        data: json,
+        directory: Directory.Documents,
+        encoding: Encoding.UTF8,
+        recursive: true
+      });
+
+      showToast("Backup saved in Documents");
+      return;
     }
+
+    // Browser fallback
+    const blob = new Blob([json], {
+      type: "application/json"
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(url);
+
+    showToast("Backup downloaded");
+
+  } catch (error) {
+    console.error("Backup error:", error);
+
+    showToast(
+      "Backup failed: " + (error?.message || "Unknown error"),
+      "error"
+    );
+
+  } finally {
     setBusy(false);
   }
-
-  async function applyRestoredData(parsed) {
-    if (!parsed || !Array.isArray(parsed.projects)) throw new Error("bad shape");
-    setProjects(parsed.projects);
-    setPaymentQR(Object.prototype.hasOwnProperty.call(parsed, "paymentQR") ? (parsed.paymentQR || null) : null);
-    markDirty();
-    showToast(`Restored ${parsed.projects.length} project${parsed.projects.length === 1 ? "" : "s"} — click Save changes`);
-  }
-
-  async function restoreBackup() {
-    setBusy(true);
-    try {
-      if (window.showOpenFilePicker) {
-        try {
-          const [handle] = await window.showOpenFilePicker({
-            types: [{ description: "Galpotori Backup", accept: { "application/json": [".json"] } }],
-          });
-          const file = await handle.getFile();
-          const text = await file.text();
-          await applyRestoredData(JSON.parse(text));
-          setBusy(false);
-          return;
-        } catch (e) {
-          if (e && e.name === "AbortError") { setBusy(false); return; }
-          // fall through to hidden input fallback
-        }
-      }
-      backupInputRef.current?.click();
-    } catch (e) {
-      showToast("Restore failed", "error");
-    }
-    setBusy(false);
-  }
+}
 
   async function onBackupFileChange(e) {
     const file = e.target.files?.[0];
