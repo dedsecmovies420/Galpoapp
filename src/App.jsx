@@ -447,8 +447,10 @@ function Projects({ projects, statusFilter, setStatusFilter, onEdit, onRemove })
 }
 
 // ---------- More: Payment QR + Backup/Restore ----------
-function MorePage({ paymentQR, setPaymentQR, projects, setProjects, showToast, markDirty }) {
-  const qrInputRef = useRef(null);
+function MorePage({ projects, setProjects, showToast, markDirty }) {
+  function onQrFileChange(e) {
+  ...
+}
   const backupInputRef = useRef(null);
   const [busy, setBusy] = useState(false);
 
@@ -549,36 +551,7 @@ function MorePage({ paymentQR, setPaymentQR, projects, setProjects, showToast, m
 
   return (
     <div className="space-y-5 fade-up fade-up-1">
-      {/* Payment QR */}
-      <div className="bg-white rounded-2xl p-5 soft-shadow">
-        <div className="flex items-center gap-2 mb-1">
-          <QrCode size={15} color="#B8842E" />
-          <h3 className="font-display font-semibold text-lg">Payment QR</h3>
-        </div>
-        <p className="text-xs text-[#A79E89] mb-4">Show this to clients for a quick scan-to-pay. Swap it any time your QR changes.</p>
-
-        <div className="flex items-center gap-4">
-          <div className="w-28 h-28 rounded-2xl bg-[#FBF8F2] flex items-center justify-center overflow-hidden shrink-0" style={{ boxShadow: "inset 0 0 0 1px #F1EBDA" }}>
-            {paymentQR ? (
-              <img src={paymentQR} alt="Payment QR code" className="w-full h-full object-contain" />
-            ) : (
-              <ImageOff size={22} color="#C9BE9E" />
-            )}
-          </div>
-          <div className="flex flex-col gap-2">
-            <button onClick={() => qrInputRef.current?.click()} className="text-xs font-medium px-3.5 py-2.5 rounded-xl press" style={{ background: "linear-gradient(135deg, #DCA84E, #B8842E)", color: "#FBF8F2" }}>
-              {paymentQR ? "Change QR code" : "Upload QR code"}
-            </button>
-            {paymentQR && (
-              <button onClick={() => { setPaymentQR(null); markDirty(); showToast("QR removed — click Save changes"); }} className="text-xs text-[#C4593F] px-3.5 py-2 rounded-xl press" style={{ boxShadow: "inset 0 0 0 1px #F1EBDA" }}>
-                Remove
-              </button>
-            )}
-          </div>
-        </div>
-        <input ref={qrInputRef} type="file" accept="image/*" className="hidden" onChange={onQrFileChange} />
-      </div>
-
+      
       {/* Backup & Restore */}
       <div className="bg-white rounded-2xl p-5 soft-shadow">
         <h3 className="font-display font-semibold text-lg mb-1">Backup &amp; restore</h3>
