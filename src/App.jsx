@@ -591,7 +591,6 @@ function ProjectModal({
   const [fileLocation, setFileLocation] = useState(initial?.fileLocation || "computer");
 
  
-
 function submit() {
   if (!clientName.trim()) {
     showToast("Please enter client name", "error");
@@ -613,6 +612,11 @@ function submit() {
     return;
   }
 
+  if (Number(paid || 0) > Number(price)) {
+  showToast("Paid amount cannot be greater than total price", "error");
+  return;
+}
+
   onSubmit({
     clientName: clientName.trim(),
     projectName: projectName.trim(),
@@ -626,6 +630,9 @@ function submit() {
   });
 }
 
+
+
+  
   return (
     <div className="fixed inset-0 backdrop-blur-md flex items-end sm:items-center justify-center z-50" style={{ background: "rgba(38,36,32,0.4)" }}>
       <div className="bg-[#FFFDF8] rounded-t-[28px] sm:rounded-[28px] w-full sm:max-w-md max-h-[92vh] overflow-y-auto soft-shadow-lg">
