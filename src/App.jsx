@@ -718,7 +718,7 @@ function submit() {
 
           <div className="flex gap-2.5 pt-1">
             {onDelete && <button onClick={onDelete} className="px-4 py-3.5 rounded-xl text-sm text-[#C4593F] bg-[#FBF0EC] press"><Trash2 size={16} /></button>}
-            <button onClick={submit} disabled={!canSubmit} className="flex-1 font-medium text-sm py-3.5 rounded-xl transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 press" style={{ background: "linear-gradient(135deg, #DCA84E, #B8842E)", color: "#FBF8F2", boxShadow: "0 8px 20px -8px rgba(184,132,46,0.6)" }}>
+            <button onClick={submit} className="flex-1 font-medium text-sm py-3.5 rounded-xl transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 press" style={{ background: "linear-gradient(135deg, #DCA84E, #B8842E)", color: "#FBF8F2", boxShadow: "0 8px 20px -8px rgba(184,132,46,0.6)" }}>
               {initial ? "Save changes" : "Add project"} <ChevronRight size={15} />
             </button>
           </div>
