@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import {
   Users, Plus, X, AlertTriangle, Pencil, Trash2, ChevronRight, Coins,
-  QrCode, Download, Upload, ImageOff, Loader2, Check
+Download, Upload, Loader2, Check
 } from "lucide-react";
 
 // ---------- palette (premium light) ----------
