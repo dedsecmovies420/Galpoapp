@@ -623,11 +623,30 @@ function ProjectModal({ initial, onClose, onSubmit, onDelete }) {
   const [status, setStatus] = useState(initial?.status || "in_progress");
   const [fileLocation, setFileLocation] = useState(initial?.fileLocation || "computer");
 
-  const canSubmit = clientName && projectName && deliveryDate && price !== "";
-  function submit() {
-    if (!canSubmit) return;
-    onSubmit({ clientName, projectName, projectDate, deliveryDate, files, price: Number(price), paid: Number(paid || 0), status, fileLocation });
+ const canSubmit =
+  clientName.trim() !== "" &&
+  projectName.trim() !== "" &&
+  deliveryDate !== "" &&
+  price !== "" &&
+  Number(price) >= 0;
+
+function submit() {
+  if (!canSubmit) {
+    return;
   }
+
+  onSubmit({
+    clientName: clientName.trim(),
+    projectName: projectName.trim(),
+    projectDate,
+    deliveryDate,
+    files,
+    price: Number(price),
+    paid: Number(paid || 0),
+    status,
+    fileLocation
+  });
+}
 
   return (
     <div className="fixed inset-0 backdrop-blur-md flex items-end sm:items-center justify-center z-50" style={{ background: "rgba(38,36,32,0.4)" }}>
