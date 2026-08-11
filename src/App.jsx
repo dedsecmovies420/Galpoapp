@@ -554,7 +554,7 @@ async function exportBackup() {
           <button onClick={exportBackup} disabled={busy} className="flex-1 flex items-center justify-center gap-1.5 text-sm font-medium py-3 rounded-xl press disabled:opacity-50" style={{ background: "linear-gradient(135deg, #DCA84E, #B8842E)", color: "#FBF8F2" }}>
             {busy ? <Loader2 size={15} className="spin" /> : <Download size={15} />} Export backup
           </button>
-          <button onClick={restoreBackup} disabled={busy} className="flex-1 flex items-center justify-center gap-1.5 text-sm font-medium py-3 rounded-xl press disabled:opacity-50" style={{ background: "#FBF8F2", color: "#262420", boxShadow: "inset 0 0 0 1px #F1EBDA" }}>
+          <button onClick={() => backupInputRef.current?.click()} disabled={busy} className="flex-1 flex items-center justify-center gap-1.5 text-sm font-medium py-3 rounded-xl press disabled:opacity-50" style={{ background: "#FBF8F2", color: "#262420", boxShadow: "inset 0 0 0 1px #F1EBDA" }}>
             {busy ? <Loader2 size={15} className="spin" /> : <Upload size={15} />} Restore backup
           </button>
         </div>
