@@ -589,12 +589,7 @@ function ProjectModal({ initial, onClose, onSubmit, onDelete }) {
   const [status, setStatus] = useState(initial?.status || "in_progress");
   const [fileLocation, setFileLocation] = useState(initial?.fileLocation || "computer");
 
- const canSubmit =
-  clientName.trim() !== "" &&
-  projectName.trim() !== "" &&
-  deliveryDate !== "" &&
-  price !== "" &&
-  Number(price) >= 0;
+ 
 
 function submit() {
   if (!clientName.trim()) {
