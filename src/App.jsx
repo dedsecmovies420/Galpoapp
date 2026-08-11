@@ -573,7 +573,13 @@ async function exportBackup() {
 const fieldCls = "w-full bg-[#FBF8F2] rounded-xl px-3.5 py-3 text-sm text-[#262420] focus:outline-none placeholder:text-[#C9BE9E] transition-shadow";
 const labelCls = "text-[11px] text-[#8B8371] mb-1.5 block uppercase tracking-wide font-medium";
 
-function ProjectModal({ initial, onClose, onSubmit, onDelete }) {
+function ProjectModal({
+  initial,
+  onClose,
+  onSubmit,
+  onDelete,
+  showToast
+}) {
   const [clientName, setClientName] = useState(initial?.clientName || "");
   const [projectName, setProjectName] = useState(initial?.projectName || "");
   const [projectDate, setProjectDate] = useState(initial?.projectDate || new Date().toISOString().slice(0,10));
