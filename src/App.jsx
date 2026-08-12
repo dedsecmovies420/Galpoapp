@@ -471,15 +471,8 @@ async function exportBackup() {
     const filename =
       `galpotori-backup-${new Date().toISOString().slice(0, 10)}.json`;
 
-    // Android
+    // Android APK
     if (window.Capacitor?.isNativePlatform?.()) {
-      await Filesystem.writeFile({
-        path: filename,
-        data: json,
-        directory: Directory.Data,
-        encoding: Encoding.UTF8
-      });
-
       const blob = new Blob([json], {
         type: "application/json"
       });
@@ -488,6 +481,7 @@ async function exportBackup() {
         type: "application/json"
       });
 
+      // Android system Save/Share dialog
       if (
         navigator.share &&
         navigator.canShare &&
@@ -495,16 +489,15 @@ async function exportBackup() {
       ) {
         await navigator.share({
           title: "Galpotori Backup",
-          text: "Save your Galpotori backup",
+          text: "Save Galpotori backup",
           files: [file]
         });
 
-        showToast("Backup ready");
-      } else {
-        showToast("Backup created successfully");
+        showToast("Backup ready to save");
+        return;
       }
 
-      return;
+      throw new Error("Android save dialog is not available");
     }
 
     // Browser
@@ -523,7 +516,9 @@ async function exportBackup() {
     a.click();
     a.remove();
 
-    setTimeout(() => URL.revokeObjectURL(url), 1500);
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+    }, 1500);
 
     showToast("Backup downloaded");
 
