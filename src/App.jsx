@@ -454,54 +454,90 @@ function MorePage({ projects, setProjects, showToast, markDirty }) {
   const backupInputRef = useRef(null);
   const [busy, setBusy] = useState(false);
 
-  async function exportBackup() {
-    if (busy) return;
-    setBusy(true);
+async function exportBackup() {
+  if (busy) return;
+  setBusy(true);
 
-    try {
-      const payload = {
-        app: "Galpotori",
-        editor: "Sourav",
-        exportedAt: new Date().toISOString(),
-        projects: Array.isArray(projects) ? projects : []
-      };
+  try {
+    const payload = {
+      app: "Galpotori",
+      editor: "Sourav",
+      exportedAt: new Date().toISOString(),
+      projects: Array.isArray(projects) ? projects : []
+    };
 
-      const json = JSON.stringify(payload, null, 2);
-      const filename = `galpotori-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    const json = JSON.stringify(payload, null, 2);
 
-      // Android APK: use Capacitor Filesystem when it is actually available.
-      if (window.Capacitor?.isNativePlatform?.()) {
-        await Filesystem.writeFile({
-          path: filename,
-          data: json,
-          directory: Directory.Documents,
-          encoding: Encoding.UTF8
+    const filename =
+      `galpotori-backup-${new Date().toISOString().slice(0, 10)}.json`;
+
+    // Android
+    if (window.Capacitor?.isNativePlatform?.()) {
+      await Filesystem.writeFile({
+        path: filename,
+        data: json,
+        directory: Directory.Data,
+        encoding: Encoding.UTF8
+      });
+
+      const blob = new Blob([json], {
+        type: "application/json"
+      });
+
+      const file = new File([blob], filename, {
+        type: "application/json"
+      });
+
+      if (
+        navigator.share &&
+        navigator.canShare &&
+        navigator.canShare({ files: [file] })
+      ) {
+        await navigator.share({
+          title: "Galpotori Backup",
+          text: "Save your Galpotori backup",
+          files: [file]
         });
-        showToast("Backup saved in Documents");
-        return;
+
+        showToast("Backup ready");
+      } else {
+        showToast("Backup created successfully");
       }
 
-      // Browser / PWA fallback.
-      const blob = new Blob([json], { type: "application/json;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      a.style.display = "none";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-
-      // Give the browser time to start the download before revoking the URL.
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-      showToast("Backup downloaded");
-    } catch (error) {
-      console.error("Backup export error:", error);
-      showToast(`Backup failed: ${error?.message || "Unknown error"}`, "error");
-    } finally {
-      setBusy(false);
+      return;
     }
+
+    // Browser
+    const blob = new Blob([json], {
+      type: "application/json;charset=utf-8"
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.style.display = "none";
+
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+
+    showToast("Backup downloaded");
+
+  } catch (error) {
+    console.error("Backup export error:", error);
+
+    showToast(
+      `Backup failed: ${error?.message || "Unknown error"}`,
+      "error"
+    );
+  } finally {
+    setBusy(false);
   }
+}
 
   function openRestorePicker() {
     if (busy) return;
@@ -630,10 +666,6 @@ function submit() {
     return;
   }
 
-  if (Number(paid || 0) > Number(price)) {
-  showToast("Paid amount cannot be greater than total price", "error");
-  return;
-}
 
   onSubmit({
     clientName: clientName.trim(),
