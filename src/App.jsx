@@ -453,8 +453,8 @@ function Projects({ projects, statusFilter, setStatusFilter, onEdit, onRemove })
 // ---------- More: Payment QR + Backup/Restore ----------
 function MorePage({ projects, setProjects, showToast, markDirty }) {
 
-  const backupInputRef = useRef(null);
-  const [busy, setBusy] = useState(false);
+const backupInputRef = useRef(null);
+const [busy, setBusy] = useState(false);
 
 
 async function exportBackup() {
