@@ -115,12 +115,12 @@ export default function App() {
   async function saveAllData() {
     if (saving) return;
     setSaving(true);
-    const payload = JSON.stringify({
+   const payload = {
   app: "Galpotori",
-  version: 2,
-  projects,
-  savedAt: new Date().toISOString(),
-});
+  editor: "Sourav",
+  exportedAt: new Date().toISOString(),
+  projects
+};
 
     let saved = writeLocalStorage(STORAGE_KEY, payload);
     if (saved) {
@@ -451,32 +451,23 @@ function Projects({ projects, statusFilter, setStatusFilter, onEdit, onRemove })
 }
 
 // ---------- More: Payment QR + Backup/Restore ----------
-function MorePage({ projects, setProjects, showToast, markDirty, paymentQR }) {
+function MorePage({ projects, setProjects, showToast, markDirty }) {
 
   const backupInputRef = useRef(null);
   const [busy, setBusy] = useState(false);
 
-  function onQrFileChange(e) {
-    const file = e.target.files?.[0];
-    e.target.value = "";
-    if (!file) return;
-    if (!file.type.startsWith("image/")) { showToast("That file isn't an image", "error"); return; }
-    const reader = new FileReader();
-    reader.onload = () => { setPaymentQR(reader.result); markDirty(); showToast("Payment QR updated — click Save changes"); };
-    reader.onerror = () => showToast("Couldn't read that image", "error");
-    reader.readAsDataURL(file);
-  }
+
 async function exportBackup() {
   setBusy(true);
 
   try {
     const payload = {
-      app: "Galpotori",
-      editor: "Sourav",
-      exportedAt: new Date().toISOString(),
-      projects,
-      paymentQR
-    };
+  app: "Galpotori",
+  editor: "Sourav",
+  exportedAt: new Date().toISOString(),
+  projects
+};
+   
 
     const json = JSON.stringify(payload, null, 2);
 
