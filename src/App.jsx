@@ -473,37 +473,22 @@ async function exportBackup() {
 
     // Android APK
     if (window.Capacitor?.isNativePlatform?.()) {
-      const blob = new Blob([json], {
-        type: "application/json"
+      await Filesystem.writeFile({
+        path: `Download/${filename}`,
+        data: json,
+        directory: Directory.ExternalStorage,
+        encoding: Encoding.UTF8
       });
 
-      const file = new File([blob], filename, {
-        type: "application/json"
-      });
-
-      // Android system Save/Share dialog
-      if (
-        navigator.share &&
-        navigator.canShare &&
-        navigator.canShare({ files: [file] })
-      ) {
-        await navigator.share({
-          title: "Galpotori Backup",
-          text: "Save Galpotori backup",
-          files: [file]
-        });
-
-        showToast("Backup ready to save");
-        return;
-      }
-
-      throw new Error("Android save dialog is not available");
+      showToast("Backup saved to Downloads");
+      return;
     }
 
     // Browser
-    const blob = new Blob([json], {
-      type: "application/json;charset=utf-8"
-    });
+    const blob = new Blob(
+      [json],
+      { type: "application/json;charset=utf-8" }
+    );
 
     const url = URL.createObjectURL(blob);
 
@@ -529,6 +514,7 @@ async function exportBackup() {
       `Backup failed: ${error?.message || "Unknown error"}`,
       "error"
     );
+
   } finally {
     setBusy(false);
   }
