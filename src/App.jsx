@@ -250,9 +250,10 @@ export default function App() {
         {!loading && tab === "more" && (
           <MorePage
   projects={projects}
-  setProjects={(value) => { setProjects(value); markDirty(); }}
+  setProjects={setProjects}
   showToast={showToast}
   markDirty={markDirty}
+  paymentQR={paymentQR}
 />
         )}
       </div>
@@ -450,7 +451,7 @@ function Projects({ projects, statusFilter, setStatusFilter, onEdit, onRemove })
 }
 
 // ---------- More: Payment QR + Backup/Restore ----------
-function MorePage({ projects, setProjects, showToast, markDirty }) {
+function MorePage({ projects, setProjects, showToast, markDirty, paymentQR }) {
 
   const backupInputRef = useRef(null);
   const [busy, setBusy] = useState(false);
